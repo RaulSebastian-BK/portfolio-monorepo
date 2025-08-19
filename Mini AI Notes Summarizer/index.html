@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini AI Notes Summarizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="container">
+    <div class="brand">
+      <h1>Mini <span>AI</span> Notes Summarizer</h1>
+      <p>Convierte texto extenso en ideas clave. Estilo pro. Sin dependencias.</p>
+    </div>
+    <div class="toolbar">
+      <button id="themeBtn" class="ghost" aria-label="Cambiar tema">🌙</button>
+      <button id="copyBtn">Copiar</button>
+      <button id="downloadBtn" class="ghost">Descargar TXT</button>
+      <button id="clearBtn" class="danger ghost">Limpiar</button>
+    </div>
+  </header>
+
+  <main class="container grid">
+    <!-- Entrada -->
+    <section class="card">
+      <div class="section-head">
+        <h2>Entrada</h2>
+        <div class="meta">
+          <span id="langBadge" class="badge">🌐 Auto</span>
+          <span id="statsBadge" class="badge">0 palabras · 0 min</span>
+        </div>
+      </div>
+
+      <textarea id="inputText" placeholder="Pega o escribe aquí tu texto largo. El idioma se detecta automáticamente (ES/EN/PT/FR/DE/IT)."></textarea>
+
+      <div class="controls">
+        <div class="range">
+          <label for="sentencesRange">Frases en resumen: <strong id="sentencesCount">3</strong></label>
+          <input id="sentencesRange" type="range" min="1" max="8" value="3"/>
+        </div>
+        <div class="selector">
+          <label for="langSelect">Idioma (opcional):</label>
+          <select id="langSelect">
+            <option value="auto" selected>Auto</option>
+            <option value="es">Español</option>
+            <option value="en">English</option>
+            <option value="pt">Português</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="it">Italiano</option>
+          </select>
+        </div>
+        <button id="summarizeBtn" class="primary">Resumir</button>
+      </div>
+    </section>
+
+    <!-- Salida -->
+    <section class="card">
+      <div class="section-head">
+        <h2>Resumen</h2>
+        <div class="meta">
+          <span id="ratioBadge" class="badge">Compresión: 0%</span>
+        </div>
+      </div>
+
+      <div id="outputBox" class="output">El resumen aparecerá aquí…</div>
+    </section>
+  </main>
+
+  <footer class="container foot">
+    Hecho con 🤍 y JavaScript — Portafolio de <a href="#" target="_blank" rel="noopener">Tu Nombre</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

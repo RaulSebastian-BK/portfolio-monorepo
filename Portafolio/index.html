@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raúl Sebastián — Full-Stack Engineer</title>
+  <meta name="description" content="Portafolio de Raúl Sebastián: full-stack engineer orientado a sistemas con foco en rendimiento y claridad arquitectónica. Next.js, TypeScript, Node.js, Prisma, Postgres." />
+  <meta name="theme-color" content="#0B0F14" />
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Raúl Sebastián — Full-Stack Engineer" />
+  <meta property="og:description" content="Ingeniero full-stack orientado a sistemas. Casos de estudio, proyectos y contacto." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-raul.jpg" />
+
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- JSON-LD (SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Person",
+    "name":"Raúl Sebastián",
+    "jobTitle":"Full-Stack Engineer",
+    "url":"https://tu-dominio.com",
+    "sameAs":["https://github.com/","https://www.linkedin.com/"],
+    "knowsAbout":["Next.js","TypeScript","Node.js","Prisma","PostgreSQL","Vercel"],
+    "worksFor":{"@type":"Organization","name":"WOA"}
+  }
+  </script>
+</head>
+<body>
+  <!-- Header sticky -->
+  <header class="site-header" role="banner">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Inicio">Raúl Sebastián</a>
+      <nav aria-label="Principal">
+        <a class="nav-link" href="#proyectos">Proyectos</a>
+        <a class="nav-link" href="#skills">Skills</a>
+        <a class="nav-link" href="#cv">CV</a>
+        <a class="nav-link" href="#contacto">Contacto</a>
+      </nav>
+      <button id="themeBtn" class="btn btn-ghost small" aria-label="Cambiar tema">🌙</button>
+    </div>
+  </header>
+
+  <main id="top" class="container" role="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="t-hero">
+      <h1 id="t-hero">Full-Stack Engineer orientado a <em>sistemas</em> y ejecución.</h1>
+      <p class="lead">
+        Construyo productos con <strong>Next.js</strong>, <strong>TypeScript</strong>, <strong>Node.js</strong> y <strong>Prisma</strong>. 
+        Enfoque: rendimiento, claridad arquitectónica y automatización. Busco posición de becario/desarrollador para acelerar mi curva en la industria.
+      </p>
+      <div class="cta">
+        <a class="btn" href="#contacto">Contactar</a>
+        <a class="btn btn-ghost" href="/Raul_Sebastian_CV.pdf" download>Descargar CV</a>
+        <a class="btn btn-ghost" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+      </div>
+    </section>
+
+    <!-- PROYECTOS -->
+    <section id="proyectos" aria-labelledby="t-proyectos">
+      <div class="section-title" id="t-proyectos">Proyectos</div>
+
+      <div class="grid-3 cards">
+        <!-- Proyecto 1 -->
+        <article class="card project">
+          <div class="chip">Frontend · LocalStorage</div>
+          <h3>Habit Tracker Web App</h3>
+          <p class="meta">HTML · CSS · JS (streaks, dark mode, export/import)</p>
+          <ul class="clean">
+            <li>Rachas diarias, filtros, búsqueda y persistencia.</li>
+            <li>Exportar/Importar JSON y tema persistente.</li>
+          </ul>
+          <div class="actions">
+            <a class="btn" href="https://tu-habit-tracker.vercel.app" target="_blank" rel="noreferrer">Demo</a>
+            <a class="btn btn-ghost" href="https://github.com/tuuser/habit-tracker" target="_blank" rel="noreferrer">Repo</a>
+          </div>
+        </article>
+
+        <!-- Proyecto 2 -->
+        <article class="card project">
+          <div class="chip">NLP heurístico</div>
+          <h3>Mini AI Notes Summarizer</h3>
+          <p class="meta">HTML · CSS · JS (detector de idioma + resumen por frecuencia)</p>
+          <ul class="clean">
+            <li>ES/EN/PT/FR/DE/IT con stopwords + diacríticos.</li>
+            <li>Compresión configurable y métricas de lectura.</li>
+          </ul>
+          <div class="actions">
+            <a class="btn" href="https://tu-summarizer.vercel.app" target="_blank" rel="noreferrer">Demo</a>
+            <a class="btn btn-ghost" href="https://github.com/tuuser/mini-ai-notes-summarizer" target="_blank" rel="noreferrer">Repo</a>
+          </div>
+        </article>
+
+        <!-- Proyecto 3 -->
+        <article class="card project">
+          <div class="chip">Dashboard</div>
+          <h3>Personal Budget Tracker</h3>
+          <p class="meta">HTML · CSS · JS · Chart.js (presupuestos + gráficas)</p>
+          <ul class="clean">
+            <li>Balance mensual, pie por categorías y flujo de caja.</li>
+            <li>Presupuesto por categoría y exportación JSON.</li>
+          </ul>
+          <div class="actions">
+            <a class="btn" href="https://tu-budget-tracker.vercel.app" target="_blank" rel="noreferrer">Demo</a>
+            <a class="btn btn-ghost" href="https://github.com/tuuser/personal-budget-tracker" target="_blank" rel="noreferrer">Repo</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" aria-labelledby="t-skills">
+      <div class="section-title" id="t-skills">Skills</div>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Frontend</h3>
+          <p class="meta">React · Next.js · TypeScript · Tailwind · Accesibilidad · SEO técnico</p>
+        </div>
+        <div class="card">
+          <h3>Backend</h3>
+          <p class="meta">Node.js · API REST · Prisma · SQL · Autenticación</p>
+        </div>
+        <div class="card">
+          <h3>DevOps & Calidad</h3>
+          <p class="meta">Vercel · Git/GitHub · Testing básico</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CV -->
+    <section id="cv" class="grid-2" aria-labelledby="t-cv">
+      <div class="card">
+        <div class="section-title" id="t-cv">Sobre mí</div>
+        <p class="meta">Estudiante de Ingeniería en Computación. Objetivo: dominar full-stack y construir sistemas que compongan. Disciplina alta y aprendizaje acelerado.</p>
+      </div>
+      <div class="card">
+        <div class="section-title">CV</div>
+        <p class="meta">Descarga mi CV en PDF con detalles de formación, skills y proyectos.</p>
+        <a class="btn" href="/Raul_Sebastian_CV.pdf" download>Descargar PDF</a>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto" aria-labelledby="t-contacto">
+      <div class="section-title" id="t-contacto">Contacto</div>
+      <form class="card" name="contact" method="POST" data-netlify="true" action="/" aria-describedby="contact-help">
+        <input type="hidden" name="form-name" value="contact" />
+        <div class="grid-2">
+          <div>
+            <input id="name" name="name" placeholder="Tu nombre" required />
+          </div>
+          <div>
+            <input id="email" name="email" type="email" placeholder="Correo" required />
+          </div>
+        </div>
+        <div>
+          <textarea id="msg" name="message" placeholder="Tu mensaje" rows="4" required></textarea>
+          <p id="contact-help" class="meta">También puedes escribirme a <a href="mailto:tuemail@dominio.com">tuemail@dominio.com</a>.</p>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="submit">Enviar</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container foot">
+      <small>© <span id="y"></span> Raúl Sebastián. Todos los derechos reservados.</small>
+      <div class="links">
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="toTop" class="to-top" aria-label="Volver arriba">↑</button>
+  <script src="scripts.js"></script>
+</body>
+</html>

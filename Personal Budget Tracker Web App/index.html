@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personal Budget Tracker</title>
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="container">
+    <div class="brand">
+      <h1>Personal <span>Budget</span> Tracker</h1>
+      <p id="currentMonthText">Controla tus finanzas</p>
+    </div>
+    <div class="toolbar">
+      <select id="currencySelect" title="Moneda">
+        <option value="MXN" selected>MXN $</option>
+        <option value="USD">USD $</option>
+        <option value="EUR">EUR €</option>
+        <option value="COP">COP $</option>
+        <option value="ARS">ARS $</option>
+      </select>
+      <button id="themeBtn" class="ghost" aria-label="Tema">🌙</button>
+      <button id="exportBtn">Exportar</button>
+      <label for="importFile" class="ghost import-label">Importar</label>
+      <input id="importFile" type="file" accept="application/json" hidden/>
+      <button id="clearBtn" class="danger ghost">Borrar todo</button>
+    </div>
+  </header>
+
+  <main class="container grid">
+    <!-- KPIs -->
+    <section class="grid-3">
+      <div class="card stat">
+        <span class="k">Balance</span>
+        <h3 id="balance" data-amount="0">$0</h3>
+      </div>
+      <div class="card stat">
+        <span class="k">Ingresos</span>
+        <h3 id="incomeTotal" data-amount="0">$0</h3>
+      </div>
+      <div class="card stat">
+        <span class="k">Gastos</span>
+        <h3 id="expenseTotal" data-amount="0">$0</h3>
+      </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="card">
+      <div class="section-head">
+        <h2>Filtros</h2>
+        <div class="meta">
+          <span class="badge" id="monthLabel">Mes actual</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="monthFilter">Mes</label>
+          <input type="month" id="monthFilter"/>
+        </div>
+        <div class="field">
+          <label for="typeFilter">Tipo</label>
+          <select id="typeFilter">
+            <option value="all">Todos</option>
+            <option value="income">Ingresos</option>
+            <option value="expense">Gastos</option>
+          </select>
+        </div>
+        <div class="field grow">
+          <label for="searchInput">Buscar</label>
+          <input type="search" id="searchInput" placeholder="Descripción o categoría…"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- Form de transacción -->
+    <section class="card">
+      <div class="section-head"><h2>Agregar transacción</h2></div>
+      <div class="row">
+        <div class="field">
+          <label for="type">Tipo</label>
+          <select id="type">
+            <option value="expense" selected>Gasto</option>
+            <option value="income">Ingreso</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="amount">Monto</label>
+          <input type="number" id="amount" step="0.01" min="0" placeholder="0.00"/>
+        </div>
+        <div class="field grow">
+          <label for="category">Categoría</label>
+          <input list="categories" id="category" placeholder="Ej. Comida"/>
+          <datalist id="categories">
+            <option>Comida</option><option>Transporte</option><option>Renta</option>
+            <option>Servicios</option><option>Salud</option><option>Ocio</option>
+            <option>Educación</option><option>Salario</option><option>Venta</option>
+          </datalist>
+        </div>
+        <div class="field grow">
+          <label for="note">Descripción</label>
+          <input id="note" placeholder="Nota (opcional)"/>
+        </div>
+        <div class="field">
+          <label for="date">Fecha</label>
+          <input type="date" id="date"/>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button id="addBtn" class="primary">Agregar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Presupuestos -->
+    <section class="card">
+      <div class="section-head"><h2>Presupuesto mensual por categoría</h2></div>
+      <div class="row">
+        <div class="field grow">
+          <label for="budgetCategory">Categoría</label>
+          <input list="categories" id="budgetCategory" placeholder="Ej. Comida"/>
+        </div>
+        <div class="field">
+          <label for="budgetAmount">Presupuesto</label>
+          <input type="number" id="budgetAmount" step="0.01" min="0" placeholder="0.00"/>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button id="setBudgetBtn">Guardar</button>
+        </div>
+      </div>
+      <div id="budgetsList" class="budget-list"></div>
+    </section>
+
+    <!-- Tabla -->
+    <section class="card">
+      <div class="section-head"><h2>Transacciones</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th><th>Tipo</th><th>Categoría</th><th>Descripción</th><th class="num">Monto</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <p id="emptyState" class="muted" style="display:none;margin-top:8px;">No hay transacciones en este mes.</p>
+    </section>
+
+    <!-- Charts -->
+    <section class="grid-2">
+      <div class="card"><h2>Gasto por categoría</h2><canvas id="pieChart" height="220"></canvas></div>
+      <div class="card"><h2>Flujo de caja (mes)</h2><canvas id="lineChart" height="220"></canvas></div>
+    </section>
+  </main>
+
+  <footer class="container foot">
+    Hecho con 🤍 y JavaScript — Portafolio de <a href="#" target="_blank" rel="noopener">Raul Sebastian</a>
+  </footer>
+
+  <!-- Toasts -->
+  <div id="toast"></div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="script.js"></script>
+</body>
+</html>

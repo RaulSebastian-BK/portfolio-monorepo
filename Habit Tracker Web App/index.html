@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Habit Tracker Web App</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+</head>
+<body>
+  <header class="container">
+    <div class="header-main">
+      <h1>Habit Tracker</h1>
+      <p>Construye disciplina, un hábito a la vez.</p>
+    </div>
+
+    <div class="header-actions">
+      <button id="darkToggle" aria-label="Cambiar tema">🌙</button>
+      <button id="exportBtn" class="ghost">Exportar</button>
+      <label for="importFile" class="ghost import-label">Importar</label>
+      <input id="importFile" type="file" accept="application/json" hidden />
+      <button id="clearAll" class="danger ghost">Borrar todo</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Agregar hábito -->
+    <section class="card">
+      <h2>Agregar nuevo hábito</h2>
+      <div class="row">
+        <input type="text" id="habitInput" placeholder="Ej: Leer 20 minutos" />
+        <input type="text" id="habitEmoji" placeholder="Emoji (opcional) 🔥" maxlength="4" />
+        <button id="addBtn">Agregar</button>
+      </div>
+      <small class="muted">Consejo: usa un emoji para identificar rápido (📚🏃‍♂️🧘‍♂️)</small>
+    </section>
+
+    <!-- Filtros y búsqueda -->
+    <section class="row card">
+      <div class="filters">
+        <button data-filter="all" class="filter active">Todos</button>
+        <button data-filter="active" class="filter">Activos</button>
+        <button data-filter="today" class="filter">Completados hoy</button>
+      </div>
+      <input type="search" id="searchInput" placeholder="Buscar hábito..."/>
+    </section>
+
+    <!-- Progreso general -->
+    <section class="card">
+      <h2>Progreso de hoy</h2>
+      <div id="progressBarContainer">
+        <div id="progressBar"></div>
+      </div>
+      <p id="progressText" class="muted">0% completado</p>
+      <small class="muted">Día: <span id="todayLabel"></span></small>
+    </section>
+
+    <!-- Lista de hábitos -->
+    <section class="card">
+      <h2>Mis hábitos</h2>
+      <ul id="habitList" class="list"></ul>
+      <p id="emptyState" class="muted">Aún no tienes hábitos. Agrega el primero 👆</p>
+    </section>
+  </main>
+
+  <footer class="container muted">
+    Hecho con disciplina 💪 — <a href="#" target="_blank" rel="noopener">Tu Nombre</a>
+  </footer>
+
+  <!-- Modal editar -->
+  <dialog id="editModal">
+    <form method="dialog" class="modal">
+      <h3>Editar hábito</h3>
+      <input type="text" id="editName" placeholder="Nombre del hábito"/>
+      <input type="text" id="editEmoji" placeholder="Emoji (opcional)" maxlength="4"/>
+      <div class="modal-actions">
+        <button id="saveEdit" value="default">Guardar</button>
+        <button id="cancelEdit">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>

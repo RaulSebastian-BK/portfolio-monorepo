@@ -1,0 +1,219 @@
+/* ========== Theme Tokens ========== */
+:root{
+  --bg: #0e1116;
+  --bg-2: radial-gradient(1200px 800px at 20% -20%, #1b2431 0%, #0e1116 45%, #0b0f15 100%);
+  --surface: rgba(255,255,255,0.06);
+  --surface-2: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.12);
+  --text: #e6eaf2;
+  --muted: #9aa4b2;
+  --primary: #24d07a;
+  --primary-2: #17b66a;
+  --danger: #ef4444;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --radius: 18px;
+  --blur: 12px;
+}
+
+/* Light mode auto si el usuario lo prefiere */
+@media (prefers-color-scheme: light){
+  :root{
+    --bg: #f5f7fb;
+    --bg-2: radial-gradient(1200px 800px at 20% -20%, #ffffff 0%, #edf2f7 50%, #eaf0f8 100%);
+    --surface: rgba(255,255,255,0.9);
+    --surface-2: rgba(255,255,255,0.95);
+    --border: rgba(17,24,39,0.08);
+    --text: #0f172a;
+    --muted: #64748b;
+    --shadow: 0 10px 30px rgba(12,15,22,.12);
+  }
+}
+
+/* Forzar modo oscuro claro según clase (lo controla el botón) */
+body.dark{
+  --bg: #0e1116 !important;
+  --bg-2: radial-gradient(1200px 800px at 20% -20%, #1b2431 0%, #0e1116 45%, #0b0f15 100%) !important;
+  --surface: rgba(255,255,255,0.06) !important;
+  --surface-2: rgba(255,255,255,0.08) !important;
+  --border: rgba(255,255,255,0.12) !important;
+  --text: #e6eaf2 !important;
+  --muted: #9aa4b2 !important;
+  --shadow: 0 10px 30px rgba(0,0,0,.35) !important;
+}
+
+/* ========== Base ========== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color: var(--text);
+  background: var(--bg-2), var(--bg);
+  background-attachment: fixed;
+  line-height: 1.5;
+}
+
+/* Contenedor y “glass” cards */
+.container{max-width: 980px; margin: 0 auto; padding: 28px 20px}
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: clip;
+}
+.card::after{
+  content:"";
+  position:absolute; inset:-1px;
+  border-radius:inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), transparent 40%);
+  pointer-events:none;
+}
+
+/* Header */
+header.container{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap
+}
+.header-main p{color:var(--muted);margin-top:6px}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.brand{
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  letter-spacing: .2px;
+  background: linear-gradient(90deg, #a1ffce, #faffd1, #24d07a);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* Controles */
+button, input {font: inherit}
+button{
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--surface-2), transparent);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+button:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.25) }
+button:active{ transform: translateY(0); }
+button.primary{ background: linear-gradient(180deg, var(--primary), var(--primary-2)); color:#05120a; border-color: transparent }
+button.ghost{ background: transparent }
+button.danger{ background: linear-gradient(180deg, #ff6b6b, #ef4444); color: #fff; border-color: transparent }
+
+input[type="text"], input[type="search"]{
+  width:100%;
+  padding:12px 14px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background: linear-gradient(180deg, var(--surface-2), rgba(255,255,255,0.02));
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+input:focus{
+  border-color: rgba(36,208,122,.65);
+  box-shadow: 0 0 0 4px rgba(36,208,122,.12);
+}
+
+/* Layouts */
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* Filtros */
+.filters{display:flex;gap:8px}
+.filter{padding:8px 12px;border-radius:999px}
+.filter.active{
+  background: linear-gradient(180deg, var(--primary), var(--primary-2));
+  color:#07130c; border-color: transparent;
+}
+
+/* Progreso */
+#progressBarContainer{
+  height: 16px; border-radius: 999px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.06));
+  border: 1px solid var(--border);
+}
+#progressBar{
+  height:100%; width:0%;
+  background: linear-gradient(90deg, var(--primary), #8cffd1);
+  box-shadow: inset 0 0 10px rgba(0,0,0,.15);
+  transition: width .3s ease;
+  position: relative;
+}
+#progressBar::after{
+  content:""; position:absolute; inset:0;
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,.25) 0 12px, transparent 12px 24px);
+  mix-blend-mode: overlay; opacity:.35; pointer-events:none;
+}
+
+.muted{color:var(--muted)}
+
+/* Lista de hábitos */
+.list{list-style:none;display:flex;flex-direction:column;gap:12px;margin:0;padding:0}
+.habit{
+  display:grid; grid-template-columns: 44px 1fr auto; gap:14px; align-items:center;
+  padding:12px 14px;
+  border:1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--surface-2), rgba(255,255,255,0.02));
+  transition: transform .15s ease, border-color .2s ease, background .2s ease;
+}
+.habit:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22) }
+.habit.done{
+  background: linear-gradient(180deg, rgba(36,208,122,.22), rgba(36,208,122,.08));
+  border-color: rgba(36,208,122,.45);
+}
+
+.habit .emoji{
+  font-size:20px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  border-radius:12px;border:1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(0,0,0,.06));
+}
+.habit .name{font-weight:600}
+.habit .meta{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:999px;border:1px solid var(--border);
+  background: linear-gradient(180deg, var(--surface), rgba(255,255,255,0.02));
+}
+
+/* Acciones item */
+.habit .actions{display:flex;gap:8px}
+.habit .actions .ghost{padding:8px 10px}
+.habit .actions .primary{color:#06120a}
+
+/* Footer */
+footer{padding:24px 0 40px;text-align:center}
+a{color:inherit;text-decoration: none;border-bottom:1px dashed rgba(255,255,255,.25)}
+a:hover{opacity:.9}
+
+/* Modal nativo */
+dialog::backdrop{background: rgba(0,0,0,.45)}
+dialog{
+  border:1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.modal{display:flex;flex-direction:column;gap:12px;min-width: min(520px, 92vw)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+
+/* Micro-interacciones */
+@keyframes pop {
+  0%{ transform: scale(.98) }
+  100%{ transform: scale(1) }
+}
+.habit.done .emoji{ animation: pop .2s ease }
+
+@media (max-width: 640px){
+  .habit{ grid-template-columns: 36px 1fr; }
+  .habit .actions{ grid-column: 1 / -1; justify-content: flex-end; }
+}
