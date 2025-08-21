@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Personal Budget Tracker</title>
+  <title>Personal Budget Tracker — Controla tus finanzas</title>
+  <meta name="description" content="App simple para llevar ingresos, gastos y presupuestos por categoría. Gráficas, exportación e importación con JSON.">
+
+  <meta name="theme-color" content="#0e1116"/>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ctext y='50' x='10' font-size='48'%3E💸%3C/text%3E%3C/svg%3E"/>
 
   <!-- Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,12 +17,13 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <header class="container">
+  <header class="container" aria-label="Barra superior">
     <div class="brand">
       <h1>Personal <span>Budget</span> Tracker</h1>
-      <p id="currentMonthText">Controla tus finanzas</p>
+      <p id="currentMonthText" class="muted">Controla tus finanzas</p>
     </div>
-    <div class="toolbar">
+    <div class="toolbar" role="group" aria-label="Herramientas">
+      <label class="sr-only" for="currencySelect">Moneda</label>
       <select id="currencySelect" title="Moneda">
         <option value="MXN" selected>MXN $</option>
         <option value="USD">USD $</option>
@@ -26,38 +31,39 @@
         <option value="COP">COP $</option>
         <option value="ARS">ARS $</option>
       </select>
-      <button id="themeBtn" class="ghost" aria-label="Tema">🌙</button>
-      <button id="exportBtn">Exportar</button>
-      <label for="importFile" class="ghost import-label">Importar</label>
+
+      <button id="themeBtn" class="ghost" aria-label="Cambiar tema" title="Cambiar tema">🌙</button>
+      <button id="exportBtn" title="Exportar datos a JSON">Exportar</button>
+
+      <label for="importFile" class="ghost import-label" title="Importar JSON">Importar</label>
       <input id="importFile" type="file" accept="application/json" hidden/>
-      <button id="clearBtn" class="danger ghost">Borrar todo</button>
+
+      <button id="clearBtn" class="danger ghost" title="Borrar todos los datos">Borrar todo</button>
     </div>
   </header>
 
   <main class="container grid">
     <!-- KPIs -->
-    <section class="grid-3">
+    <section class="grid-3" aria-label="Indicadores clave">
       <div class="card stat">
         <span class="k">Balance</span>
-        <h3 id="balance" data-amount="0">$0</h3>
+        <h3 id="balance" data-amount="0" aria-live="polite">$0</h3>
       </div>
       <div class="card stat">
         <span class="k">Ingresos</span>
-        <h3 id="incomeTotal" data-amount="0">$0</h3>
+        <h3 id="incomeTotal" data-amount="0" aria-live="polite">$0</h3>
       </div>
       <div class="card stat">
         <span class="k">Gastos</span>
-        <h3 id="expenseTotal" data-amount="0">$0</h3>
+        <h3 id="expenseTotal" data-amount="0" aria-live="polite">$0</h3>
       </div>
     </section>
 
     <!-- Filtros -->
-    <section class="card">
+    <section class="card" aria-label="Filtros">
       <div class="section-head">
         <h2>Filtros</h2>
-        <div class="meta">
-          <span class="badge" id="monthLabel">Mes actual</span>
-        </div>
+        <div class="meta"><span class="badge" id="monthLabel">Mes actual</span></div>
       </div>
       <div class="row">
         <div class="field">
@@ -80,7 +86,7 @@
     </section>
 
     <!-- Form de transacción -->
-    <section class="card">
+    <section class="card" aria-label="Agregar transacción">
       <div class="section-head"><h2>Agregar transacción</h2></div>
       <div class="row">
         <div class="field">
@@ -112,14 +118,15 @@
           <input type="date" id="date"/>
         </div>
         <div class="field">
-          <label>&nbsp;</label>
+          <label class="sr-only" for="addBtn">Agregar</label>
           <button id="addBtn" class="primary">Agregar</button>
         </div>
       </div>
+      <p class="hint muted">Tip: presiona <kbd>Enter</kbd> en “Descripción” para agregar más rápido.</p>
     </section>
 
     <!-- Presupuestos -->
-    <section class="card">
+    <section class="card" aria-label="Presupuesto por categoría">
       <div class="section-head"><h2>Presupuesto mensual por categoría</h2></div>
       <div class="row">
         <div class="field grow">
@@ -131,15 +138,15 @@
           <input type="number" id="budgetAmount" step="0.01" min="0" placeholder="0.00"/>
         </div>
         <div class="field">
-          <label>&nbsp;</label>
+          <label class="sr-only" for="setBudgetBtn">Guardar presupuesto</label>
           <button id="setBudgetBtn">Guardar</button>
         </div>
       </div>
-      <div id="budgetsList" class="budget-list"></div>
+      <div id="budgetsList" class="budget-list" aria-live="polite"></div>
     </section>
 
     <!-- Tabla -->
-    <section class="card">
+    <section class="card" aria-label="Transacciones">
       <div class="section-head"><h2>Transacciones</h2></div>
       <div class="table-wrap">
         <table>
@@ -151,29 +158,28 @@
           <tbody id="tableBody"></tbody>
         </table>
       </div>
-      <p id="emptyState" class="muted" style="display:none;margin-top:8px;">No hay transacciones en este mes.</p>
+      <p id="emptyState" class="muted empty" style="display:none;">
+        <span>🗂️</span> No hay transacciones en este mes.
+      </p>
     </section>
 
     <!-- Charts -->
-    <section class="grid-2">
+    <section class="grid-2" aria-label="Gráficas">
       <div class="card"><h2>Gasto por categoría</h2><canvas id="pieChart" height="220"></canvas></div>
       <div class="card"><h2>Flujo de caja (mes)</h2><canvas id="lineChart" height="220"></canvas></div>
     </section>
   </main>
 
   <footer class="container foot">
-    Hecho con 🤍 y JavaScript — Portafolio de <a href="#" target="_blank" rel="noopener">Raul Sebastian</a>
+    Hecho con 🤍 y JavaScript — Portafolio de
+    <a href="https://raulsebastian.vercel.app" target="_blank" rel="noopener">Raúl Sebastián</a>
   </footer>
 
   <!-- Toasts -->
-  <div id="toast"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
   <script src="script.js"></script>
 </body>
 </html>
-
-<!-- trigger redeploy 2025-08-20 07:22:22 -->
-
-<!-- trigger redeploy 2025-08-20 07:22:44 -->

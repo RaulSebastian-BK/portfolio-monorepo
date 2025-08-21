@@ -18,11 +18,14 @@ function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
 // ====== Helpers ======
 const $ = sel => document.querySelector(sel);
-const $$ = sel => document.querySelectorAll(sel);
 
 const localeFor = cur => (cur==="MXN"?"es-MX":cur==="EUR"?"es-ES":"en-US");
+const symbolFor = cur => ({MXN:"$",USD:"$",EUR:"€",COP:"$",ARS:"$"}[cur] || "$");
+
 function fmt(amount){
-  return new Intl.NumberFormat(localeFor(state.currency), { style:"currency", currency: state.currency, maximumFractionDigits:2 }).format(amount||0);
+  return new Intl.NumberFormat(localeFor(state.currency), {
+    style:"currency", currency: state.currency, maximumFractionDigits:2
+  }).format(amount||0);
 }
 function ym(dateStr){
   const d = new Date(dateStr); if (isNaN(d)) return null;
@@ -45,7 +48,10 @@ function animateAmount(el, value){
     const p = Math.min(1, (t-start)/dur);
     const v = from + (to-from)*p;
     el.textContent = fmt(v);
-    if (p<1) requestAnimationFrame(step); else el.dataset.amount = to.toString();
+    if (p<1) requestAnimationFrame(step); else {
+      el.dataset.amount = to.toString();
+      balanceColor(); // actualizar color si es el balance
+    }
   }
   requestAnimationFrame(step);
 }
@@ -105,17 +111,26 @@ themeBtn.addEventListener("click", ()=>{
 // ====== Inicialización ======
 (function init(){
   currencySelect.value = state.currency;
+  syncPlaceholders();
+
   dateInput.value = todayISO();
   const ymNow = ym(todayISO());
   monthFilter.value = ymNow;
   currentMonthText.textContent = `Mes: ${monthName(ymNow)}`;
 
-  currencySelect.addEventListener("change", ()=>{ state.currency = currencySelect.value; save(); render(true); });
-  monthFilter.addEventListener("change", ()=>{ currentMonthText.textContent = `Mes: ${monthName(monthFilter.value)}`; render(true); });
+  currencySelect.addEventListener("change", ()=>{
+    state.currency = currencySelect.value; save(); syncPlaceholders(); render(true);
+  });
+  monthFilter.addEventListener("change", ()=>{
+    currentMonthText.textContent = `Mes: ${monthName(monthFilter.value)}`; render(true);
+  });
   typeFilter.addEventListener("change", render);
   searchInput.addEventListener("input", render);
 
   addBtn.addEventListener("click", addTransaction);
+  // Atajo: Enter en descripción agrega
+  noteInput.addEventListener("keydown", (e)=>{ if (e.key==="Enter") { e.preventDefault(); addTransaction(); } });
+
   setBudgetBtn.addEventListener("click", setBudget);
 
   exportBtn.addEventListener("click", exportJSON);
@@ -124,6 +139,12 @@ themeBtn.addEventListener("click", ()=>{
 
   render(true);
 })();
+
+function syncPlaceholders(){
+  const sym = symbolFor(state.currency);
+  amountInput.placeholder = `0.00 ${sym}`;
+  budgetAmount.placeholder = `0.00 ${sym}`;
+}
 
 // ====== CRUD ======
 function addTransaction(){
@@ -185,20 +206,23 @@ function renderBudgets(){
 
   // gasto acumulado por categoría
   const spent = {};
-  for (const t of expenses){
-    spent[t.category] = (spent[t.category] || 0) + t.amount;
-  }
+  for (const t of expenses){ spent[t.category] = (spent[t.category] || 0) + t.amount; }
 
   for (const [cat, limit] of Object.entries(state.budgets)){
     const used = spent[cat] || 0;
-    const pct = limit>0 ? Math.min(100, Math.round((used/limit)*100)) : 0;
+    const pct = limit>0 ? Math.round((used/limit)*100) : 0;
 
     const item = document.createElement("div");
     item.className = "budget-item";
+    // color por umbral
+    const color =
+      pct >= 100 ? "linear-gradient(90deg,#ef4444,#fb7185)" :
+      pct >= 80  ? "linear-gradient(90deg,#f59e0b,#fbbf24)" :
+                   "linear-gradient(90deg,var(--primary),#8cffd1)";
     item.innerHTML = `
       <strong>${cat}</strong>
-      <span class="bar"><span style="width:${pct}%;"></span></span>
-      <span>${fmt(used)} / ${fmt(limit)} (${pct}%)</span>
+      <span class="bar"><span style="width:${Math.min(100, Math.max(0,pct))}%; background:${color}"></span></span>
+      <span>${fmt(used)} / ${fmt(limit)} (${Math.max(0,pct)}%)</span>
       <span class="spacer"></span>
       <button class="ghost" data-edit="${cat}">Editar</button>
       <button class="danger" data-del="${cat}">Eliminar</button>
@@ -219,6 +243,12 @@ function renderBudgets(){
 // ====== Render principal ======
 let pieChart, lineChart;
 
+function balanceColor(){
+  const v = Number(balanceEl.dataset.amount || 0);
+  balanceEl.classList.toggle("positive", v >= 0);
+  balanceEl.classList.toggle("negative", v < 0);
+}
+
 function render(refreshKpis=false){
   const month = monthFilter.value || ym(todayISO());
   const type = typeFilter.value;
@@ -233,13 +263,13 @@ function render(refreshKpis=false){
     (t.category+t.note).toLowerCase().includes(query)
   );
 
-  // ===== Totales del mes (IGNORA filtros de tipo/búsqueda) — FIX =====
+  // Totales del mes (ignora filtros de tipo/búsqueda)
   const monthOnly = state.transactions.filter(t => ym(t.date)===month);
   const income = monthOnly.filter(t=>t.type==="income").reduce((a,b)=>a+b.amount,0);
   const expense = monthOnly.filter(t=>t.type==="expense").reduce((a,b)=>a+b.amount,0);
   const balance = income - expense;
 
-  // KPIs (animados si refreshKpis)
+  // KPIs
   if (refreshKpis){
     animateAmount(balanceEl, balance);
     animateAmount(incomeTotalEl, income);
@@ -249,12 +279,13 @@ function render(refreshKpis=false){
     incomeTotalEl.textContent = fmt(income);
     expenseTotalEl.textContent = fmt(expense);
     balanceEl.dataset.amount = balance; incomeTotalEl.dataset.amount = income; expenseTotalEl.dataset.amount = expense;
+    balanceColor();
   }
 
   // Tabla
   tableBody.innerHTML = "";
   if (rows.length === 0) {
-    emptyState.style.display = "block";
+    emptyState.style.display = "flex";
   } else {
     emptyState.style.display = "none";
     rows
@@ -268,8 +299,8 @@ function render(refreshKpis=false){
           <td>${t.note||""}</td>
           <td class="num">${fmt(t.amount)}</td>
           <td class="actions">
-            <button class="ghost" data-edit="${t.id}">Editar</button>
-            <button class="danger" data-del="${t.id}">Eliminar</button>
+            <button class="ghost" data-edit="${t.id}" title="Editar">Editar</button>
+            <button class="danger" data-del="${t.id}" title="Eliminar">Eliminar</button>
           </td>
         `;
         tr.querySelector('[data-del]').onclick = () => removeTransaction(t.id);
@@ -285,7 +316,6 @@ function render(refreshKpis=false){
 
 // ====== Gráficas ======
 function palette(n){
-  // paleta suave automática
   const base = [
     "#22c55e","#60a5fa","#f59e0b","#f472b6","#a78bfa","#34d399",
     "#f87171","#38bdf8","#84cc16","#fca5a5","#c084fc","#67e8f9"
